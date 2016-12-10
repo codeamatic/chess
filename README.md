@@ -1,1 +1,2 @@
-# uci-client
+#  Universal Chess Interface Client
+
