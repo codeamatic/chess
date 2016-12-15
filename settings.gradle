@@ -1,2 +1,4 @@
-rootProject.name = 'uci-client'
+rootProject.name = 'chess'
+include 'uci-client'
+include 'uci-service'
 
