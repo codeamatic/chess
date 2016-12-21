@@ -3,10 +3,8 @@ package codeamatic;
 import com.amazon.speech.json.SpeechletRequestEnvelope;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.IntentRequest;
-import com.amazon.speech.speechlet.SpeechletRequest;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
-import com.amazon.speech.ui.SimpleCard;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
 
-import codeamatic.uci.client.Client;
+import codeamatic.support.FileStorage;
+import codeamatic.support.Move;
+import codeamatic.support.MoveRepository;
 
 /**
  * Controller that handles all API requests for ChessController functionality.
@@ -26,9 +26,12 @@ public class ChessController {
 
   private Client uciClient;
 
+  private MoveRepository moveRepository;
+
   @Autowired
-  public ChessController(Client uciClient) {
+  public ChessController(Client uciClient, MoveRepository moveRepository) {
     this.uciClient = uciClient;
+    this.moveRepository = moveRepository;
   }
 
   @RequestMapping(path = "/", method = RequestMethod.POST)
@@ -51,11 +54,17 @@ public class ChessController {
    * @param intent Intent object retrieved from JSON intentRequest
    */
   private String manageIntent(@NotNull Intent intent) {
-    if("GameState".equals(intent.getName())) {
+    if ("GameState".equals(intent.getName())) {
       // ...
       return null;
-    } else if("MovePiece".equals(intent.getName())) {
-      return uciClient.getBestMove("Test");
+    } else if ("MovePiece".equals(intent.getName())) {
+      String current = intent.getSlot("Current").getValue();
+      String target = intent.getSlot("Target").getValue();
+
+      Move move = new Move(String.join("", current, target));
+
+      moveRepository.saveMove(move);
+      return uciClient.getBestMove(move.getLocation());
     }
     return null;
   }

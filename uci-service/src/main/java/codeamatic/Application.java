@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import codeamatic.uci.client.Client;
-import codeamatic.uci.client.StockfishClient;
+import codeamatic.support.FileStorage;
+import codeamatic.support.MoveRepository;
 
 /**
  * Entry-point for the application.
@@ -20,5 +20,10 @@ public class Application {
   @Bean
   public Client uciClient() {
     return new StockfishClient();
+  }
+
+  @Bean
+  public MoveRepository moveRepository() {
+    return new FileStorage();
   }
 }
