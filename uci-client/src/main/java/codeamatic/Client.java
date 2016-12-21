@@ -1,4 +1,4 @@
-package codeamatic.uci.client;
+package codeamatic;
 
 /**
  * Interface for interacting with a UCI Engine
@@ -17,4 +17,5 @@ public interface Client {
    * @return String the best move calculated by the UCI engine.
    */
   String getBestMove(String move);
+
 }
